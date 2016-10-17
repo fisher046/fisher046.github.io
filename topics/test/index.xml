@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Test on Huan Zhang</title>
+    <link>https://fisher046.github.io/topics/test/</link>
+    <description>Recent content in Test on Huan Zhang</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018. All rights reserved.</copyright>
+    
+	<atom:link href="https://fisher046.github.io/topics/test/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>bbb</title>
+      <link>https://fisher046.github.io/post/my-first-post/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://fisher046.github.io/post/my-first-post/</guid>
+      <description> abcd </description>
+    </item>
+    
+  </channel>
+</rss>
