@@ -7,9 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018. All rights reserved.</copyright>
+    <lastBuildDate>Fri, 10 Aug 2018 17:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://fisher046.github.io/topics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Golang</title>
+      <link>https://fisher046.github.io/topics/golang/</link>
+      <pubDate>Fri, 10 Aug 2018 17:00:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/topics/golang/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

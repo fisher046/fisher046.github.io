@@ -196,6 +196,61 @@
 
 <div class="content">
   
+    <article>
+  <header>
+    <h2><a href="https://fisher046.github.io/post/understanding-the-nil-in-golang/">Understanding the nil in Golang</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>10 Aug 2018</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://fisher046.github.io/topics/golang">Golang</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://fisher046.github.io/tags/programming">Programming</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil
+理解Go语言的nil
+Is it a bug? package main import ( &#34;fmt&#34; ) type doError struct{} func (e *doError) Error() string { return &#34;&#34; } func do() error { var err *doError return err } func main() { err := do() fmt.Println(err == nil) // What&#39;s the result? } What&rsquo;s the nil? See a very, very, very familiar code.
+  </p>
+
+  
+  <footer>
+    <a href="https://fisher046.github.io/post/understanding-the-nil-in-golang/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
 
   
 

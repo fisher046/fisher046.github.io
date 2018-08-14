@@ -7,9 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018. All rights reserved.</copyright>
+    <lastBuildDate>Fri, 10 Aug 2018 17:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://fisher046.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Understanding the nil in Golang</title>
+      <link>https://fisher046.github.io/post/understanding-the-nil-in-golang/</link>
+      <pubDate>Fri, 10 Aug 2018 17:00:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/post/understanding-the-nil-in-golang/</guid>
+      <description>Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil
+理解Go语言的nil
+Is it a bug? package main import ( &amp;#34;fmt&amp;#34; ) type doError struct{} func (e *doError) Error() string { return &amp;#34;&amp;#34; } func do() error { var err *doError return err } func main() { err := do() fmt.Println(err == nil) // What&amp;#39;s the result? } What&amp;rsquo;s the nil? See a very, very, very familiar code.</description>
+    </item>
     
   </channel>
 </rss>
