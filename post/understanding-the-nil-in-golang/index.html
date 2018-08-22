@@ -505,31 +505,66 @@ len(<span style="color:#a6e22e">m</span>)  <span style="color:#75715e">// 0
 <p>If <code>a</code> or <code>b</code> is closed, <code>&lt;-a</code> or <code>&lt;-b</code> will return zero value without a stop. This is not expected. We want to stop merge value from <code>a</code> if it is closed. Change the code:</p>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">merge</span>(<span style="color:#a6e22e">out</span> <span style="color:#66d9ef">chan</span><span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span> <span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>) {
-  <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">b</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-    <span style="color:#66d9ef">select</span> {
-      <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">a</span>:
-          <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
-            <span style="color:#a6e22e">a</span> = <span style="color:#66d9ef">nil</span>
-            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;a is nil&#34;</span>)
-            <span style="color:#66d9ef">continue</span>
-          }
-          <span style="color:#a6e22e">out</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">v</span>
-      <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">b</span>:
-          <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
-            <span style="color:#a6e22e">b</span> = <span style="color:#66d9ef">nil</span>
-            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;b is nil&#34;</span>)
-            <span style="color:#66d9ef">continue</span>
-          }
-          <span style="color:#a6e22e">out</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">v</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">b</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        <span style="color:#66d9ef">select</span> {
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">a</span>:
+                <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+                    <span style="color:#a6e22e">a</span> = <span style="color:#66d9ef">nil</span>
+                    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;a is nil&#34;</span>)
+                    <span style="color:#66d9ef">continue</span>
+                }
+                <span style="color:#a6e22e">out</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">v</span>
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">b</span>:
+                <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+                    <span style="color:#a6e22e">b</span> = <span style="color:#66d9ef">nil</span>
+                    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;b is nil&#34;</span>)
+                    <span style="color:#66d9ef">continue</span>
+                }
+            <span style="color:#a6e22e">out</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">v</span>
+        }
     }
-  }
-  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;close out&#34;</span>)
-  close(<span style="color:#a6e22e">out</span>)
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;close out&#34;</span>)
+    close(<span style="color:#a6e22e">out</span>)
 }</code></pre></div>
 
 <p>When <code>a</code> or <code>b</code> is closed, set it as <code>nil</code>, it means the <code>case</code> will not be used because <code>nil</code> channel will be blocked forever.</p>
 
-<h2 id="for-interfaces-tbd">For Interfaces (TBD)</h2>
+<h2 id="for-interfaces">For Interfaces</h2>
+
+<p>Interface is not a pointer, it contains two parts, type and value. Only when both of them are <code>nil</code>, it is <code>nil</code>. See:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">do</span>() <span style="color:#66d9ef">error</span> {  <span style="color:#75715e">// error(*doError, nil)
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">doError</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>  <span style="color:#75715e">// nil of type *doError
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">do</span>()
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>)
+}</code></pre></div>
+
+<p>The output is <code>false</code>. Because the type of error is <code>*doError</code> and the value is <code>nil</code>, the error is not <code>nil</code>. So do not declare an error, just return <code>nil</code>.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">do</span>() <span style="color:#66d9ef">error</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}</code></pre></div>
+
+<p>See another code:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">do</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">doError</span> {  <span style="color:#75715e">// nil of type *doError
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">wrapDo</span>() <span style="color:#66d9ef">error</span> {  <span style="color:#75715e">// error (*doError, nil)
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">do</span>()        <span style="color:#75715e">// nil of type *doError
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">wrapDo</span>()          <span style="color:#75715e">// error  (*doError, nil)
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>)  <span style="color:#75715e">// false
+</span><span style="color:#75715e"></span>}</code></pre></div>
+
+<p>The output is still <code>false</code> because although <code>wrapDo</code> returns error type, <code>do</code> returns <code>*doError</code>. So do not return typed error. Follow these 2 principles, then we can carefully use <code>if x != nil</code>.</p>
 
 
   
