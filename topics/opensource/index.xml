@@ -19,7 +19,7 @@
       
       <guid>https://fisher046.github.io/post/an-example-of-kong/</guid>
       <description>What is Kong? An API gateway based on Nginx like below picture. It allows programming in (1,2,3,4) location.
- +------------------------------+ | | | +-------+ | | 1 | | 2 | +-------------&amp;gt; +--------------&amp;gt; | | | | | | route | | | 4 | | 3 | &amp;lt;-------------+ &amp;lt;--------------+ | | nginx | | | +-------+ | | kong | +------------------------------+  An Example of Using Kong The Requirement I need an API /country, it can return the data center location which the service is running in.</description>
+ +------------------------------+ | | | +-------+ | | 1 | | 2 | +-------------&amp;gt; +--------------&amp;gt; | | | | | | route | | | 4 | | 3 | &amp;lt;-------------+ &amp;lt;--------------+ | | nginx | | | +-------+ | | kong | +------------------------------+  An Example of Using Kong The Requirement I need an API /country, it can return the deployment location which the service is running in.</description>
     </item>
     
   </channel>
