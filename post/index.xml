@@ -7,19 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018. All rights reserved.</copyright>
-    <lastBuildDate>Mon, 15 Oct 2018 21:49:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 21 Oct 2018 13:35:00 +0800</lastBuildDate>
     
 	<atom:link href="https://fisher046.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>An example of Kong</title>
-      <link>https://fisher046.github.io/post/an-example-of-kong/</link>
-      <pubDate>Mon, 15 Oct 2018 21:49:00 +0800</pubDate>
+      <title>Tips of deploying service on Kubernetes</title>
+      <link>https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/</link>
+      <pubDate>Sun, 21 Oct 2018 13:35:00 +0800</pubDate>
       
-      <guid>https://fisher046.github.io/post/an-example-of-kong/</guid>
-      <description>What is Kong? An API gateway based on Nginx like below picture. It allows programming in (1,2,3,4) location.
- +------------------------------+ | | | +-------+ | | 1 | | 2 | +-------------&amp;gt; +--------------&amp;gt; | | | | | | route | | | 4 | | 3 | &amp;lt;-------------+ &amp;lt;--------------+ | | nginx | | | +-------+ | | kong | +------------------------------+  An Example of Using Kong The Requirement I need an API /country, it can return the deployment location which the service is running in.</description>
+      <guid>https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/</guid>
+      <description>Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
+About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
+ Function container Init container Monitor container Operator container     Function container is the service.
+Init container is responsible for initializing the service. For example, the configuration.</description>
     </item>
     
     <item>

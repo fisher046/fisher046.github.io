@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Some tips from experience">
+  <meta name="generator" content="Hugo 0.49" />
+
+  <title>Tips of deploying service on Kubernetes &middot; Huan Zhang</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://fisher046.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://fisher046.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://fisher046.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://fisher046.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  <a class="pure-menu-heading brand" href="https://fisher046.github.io/">
+  <img src="https://fisher046.github.io/img/logo.png" width="105px">
+</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://fisher046.github.io/topics/"><i class='fa fa-folder fa-fw'></i>Topics</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://fisher046.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2018. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Tips of deploying service on Kubernetes</h1>
+  <h2>Some tips from experience</h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>21 Oct 2018</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://fisher046.github.io/topics/kubernetes">Kubernetes</a>
+    
+  </div>
+  
+  
+
+  
+
+</div>
+
+  
+
+<h1 id="preface">Preface</h1>
+
+<p>These are some tips or something should be considered when you want to deploy your service on Kubernetes.</p>
+
+<h1 id="about-pod">About Pod</h1>
+
+<h2 id="how-to-decide-what-things-should-be-put-in-one-pod">How to decide what things should be put in one Pod?</h2>
+
+<p>When designing a Pod, you should consider below 4 types container.</p>
+
+<ul>
+<li>Function container</li>
+<li>Init container</li>
+<li>Monitor container</li>
+<li>Operator container</li>
+</ul>
+
+
+
+<div class="pure-g">
+
+  
+  
+  
+  
+  <div class="pod">
+    <div style="padding: 0 .2em">
+      <img
+        class="pure-img-responsive"
+        src="https://fisher046.github.io/img/post/pod.png"
+        alt="">
+    </div>
+  </div>
+  
+
+</div>
+
+
+<p>Function container is the service.</p>
+
+<p>Init container is responsible for initializing the service. For example, the configuration. It would be started and completed before function container is started.</p>
+
+<p>Monitor container should be existed if there is monitor API in service.</p>
+
+<p>Operator container should be existed if there is operator API in service.</p>
+
+<h2 id="use-initcontainer-to-do-initialization-with-configmap">Use InitContainer to do initialization with ConfigMap</h2>
+
+<p>A good example is how Jenkins Helm Charts handle ConfigMap with InitContainer.</p>
+
+<ul>
+<li>Write configuration template and script both into ConfigMap.</li>
+<li>Create a Volume with ConfigMap.</li>
+<li>Mount the Volume to InitContainer and run configuration script to convert template to a real configuration file (still in the Volume).</li>
+<li>Mount the Volume to function container and the configuration is there.</li>
+</ul>
+
+<p><a href="https://github.com/helm/charts/blob/master/stable/jenkins/templates/jenkins-master-deployment.yaml">https://github.com/helm/charts/blob/master/stable/jenkins/templates/jenkins-master-deployment.yaml</a></p>
+
+<h2 id="statefulset">StatefulSet</h2>
+
+<p>When you have below requirements, consider using StatefulSet.</p>
+
+<ul>
+<li>Need fixed container identifier (hostname).</li>
+<li>Need persistent volume.</li>
+<li>Need sequence deploying and deleting.</li>
+</ul>
+
+<p>For a StatefulSet with N replicas, when Pods are being deployed, they are created sequentially, in order from {0..N-1}.</p>
+
+<p>For a StatefulSet with N replicas, when Pods are being deleted, they are terminated in reverse order, from {N-1..0}.</p>
+
+<h2 id="readiness-and-liveness">Readiness and Liveness</h2>
+
+<p>Readiness is used to know when a Container is ready to start accepting traffic. When a Pod is not ready, it is removed from Service load balancers.</p>
+
+<p>Liveness is used to know when to restart a Container.</p>
+
+<p>See an example.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">readinessProbe:
+  tcpSocket:
+    port: <span style="color:#ae81ff">8080</span>
+  initialDelaySeconds: <span style="color:#ae81ff">5</span>
+  periodSeconds: <span style="color:#ae81ff">10</span>
+
+livenessProbe:
+  exec:
+    command:
+    - cat
+    - /tmp/healthy
+  initialDelaySeconds: <span style="color:#ae81ff">5</span>
+  periodSeconds: <span style="color:#ae81ff">5</span></code></pre></div>
+
+<h1 id="about-service">About Service</h1>
+
+<h2 id="headless-service-with-selector">Headless Service with Selector</h2>
+
+<p>See below case. We need to go to the specific pod to get job status.</p>
+
+
+
+<div class="pure-g">
+
+  
+  
+  
+  
+  <div class="job">
+    <div style="padding: 0 .2em">
+      <img
+        class="pure-img-responsive"
+        src="https://fisher046.github.io/img/post/job.png"
+        alt="">
+    </div>
+  </div>
+  
+
+</div>
+
+
+<p>For headless services that define selectors, the endpoints controller creates Endpoints records in the API, and modifies the DNS configuration to return A records (addresses) that point directly to the Pods backing the Service.</p>
+
+<p>See Kafka Helm Chart as an example:
+<a href="https://github.com/helm/charts/blob/master/incubator/kafka/templates/service-headless.yaml">https://github.com/helm/charts/blob/master/incubator/kafka/templates/service-headless.yaml</a></p>
+
+<h1 id="about-ingress">About Ingress</h1>
+
+<h1 id="about-rbac">About RBAC</h1>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://fisher046.github.io/post/understanding-the-nil-in-golang/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://fisher046.github.io/post/understanding-the-nil-in-golang/">Understanding the nil in Golang</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'fisher046';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+</div>
+</div>
+<script src="https://fisher046.github.io/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+
