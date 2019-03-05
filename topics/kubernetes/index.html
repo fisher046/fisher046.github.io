@@ -231,7 +231,7 @@
 Selected Security Groups should ensure the EFS can be accessible.
  Create one EC2 instance in the same VPC as EFS.
  SSH to the instance, mount the EFS and create folder.
-  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs  file_sys_id can be found from AWS EFS console.
+  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs file_sys_id can be found from AWS EFS console.
   </p>
 
   

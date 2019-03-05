@@ -232,11 +232,10 @@
 <li><p>SSH to the instance, mount the EFS and create folder.</p></li>
 </ol>
 
-<pre><code class="language-bash">sudo yum install -y nfs-utils
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">sudo yum install -y nfs-utils
 sudo mkdir efs
-sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs
-sudo mkdir efs/pvs
-</code></pre>
+sudo mount -t nfs4 -o nfsvers<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>.1,rsize<span style="color:#f92672">=</span><span style="color:#ae81ff">1048576</span>,wsize<span style="color:#f92672">=</span><span style="color:#ae81ff">1048576</span>,hard,timeo<span style="color:#f92672">=</span><span style="color:#ae81ff">600</span>,retrans<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,noresvport <span style="color:#e6db74">${</span>file_sys_id<span style="color:#e6db74">}</span>.efs.us-east-1.amazonaws.com:/ efs
+sudo mkdir efs/pvs</code></pre></div>
 
 <p><code>file_sys_id</code> can be found from AWS EFS console.</p>
 
@@ -246,36 +245,34 @@ sudo mkdir efs/pvs
 <li>Create <code>ServiceAccount</code>.</li>
 </ol>
 
-<pre><code class="language-yaml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: efs-provisioner
-</code></pre>
+  name: efs-provisioner</code></pre></div>
 
-<pre><code class="language-bash">kubectl create -f service_account.yaml
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f service_account.yaml</code></pre></div>
 
 <ol>
 <li>Create <code>RBAC</code> rules.</li>
 </ol>
 
-<pre><code class="language-yaml">kind: ClusterRole
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: efs-provisioner-runner
 rules:
-  - apiGroups: [&quot;&quot;]
-    resources: [&quot;persistentvolumes&quot;]
-    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;delete&quot;]
-  - apiGroups: [&quot;&quot;]
-    resources: [&quot;persistentvolumeclaims&quot;]
-    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;update&quot;]
-  - apiGroups: [&quot;storage.k8s.io&quot;]
-    resources: [&quot;storageclasses&quot;]
-    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
-  - apiGroups: [&quot;&quot;]
-    resources: [&quot;events&quot;]
-    verbs: [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]
+  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
+    resources: [<span style="color:#e6db74">&#34;persistentvolumes&#34;</span>]
+    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;create&#34;</span>, <span style="color:#e6db74">&#34;delete&#34;</span>]
+  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
+    resources: [<span style="color:#e6db74">&#34;persistentvolumeclaims&#34;</span>]
+    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;update&#34;</span>]
+  - apiGroups: [<span style="color:#e6db74">&#34;storage.k8s.io&#34;</span>]
+    resources: [<span style="color:#e6db74">&#34;storageclasses&#34;</span>]
+    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>]
+  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
+    resources: [<span style="color:#e6db74">&#34;events&#34;</span>]
+    verbs: [<span style="color:#e6db74">&#34;create&#34;</span>, <span style="color:#e6db74">&#34;update&#34;</span>, <span style="color:#e6db74">&#34;patch&#34;</span>]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -284,7 +281,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: efs-provisioner
-     # replace with namespace where provisioner is deployed
+     <span style="color:#75715e"># replace with namespace where provisioner is deployed</span>
     namespace: default
 roleRef:
   kind: ClusterRole
@@ -296,9 +293,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-efs-provisioner
 rules:
-  - apiGroups: [&quot;&quot;]
-    resources: [&quot;endpoints&quot;]
-    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]
+  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
+    resources: [<span style="color:#e6db74">&#34;endpoints&#34;</span>]
+    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;create&#34;</span>, <span style="color:#e6db74">&#34;update&#34;</span>, <span style="color:#e6db74">&#34;patch&#34;</span>]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -307,16 +304,14 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: efs-provisioner
-    # replace with namespace where provisioner is deployed
+    <span style="color:#75715e"># replace with namespace where provisioner is deployed</span>
     namespace: default
 roleRef:
   kind: Role
   name: leader-locking-efs-provisioner
-  apiGroup: rbac.authorization.k8s.io
-</code></pre>
+  apiGroup: rbac.authorization.k8s.io</code></pre></div>
 
-<pre><code class="language-bash">kubectl create -f rbac.yaml
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f rbac.yaml</code></pre></div>
 
 <h1 id="deploy-efs-provisioner-to-k8s-cluster">Deploy EFS provisioner to k8s cluster</h1>
 
@@ -324,22 +319,21 @@ roleRef:
 <li>Create <code>ConfigMap</code>.</li>
 </ol>
 
-<pre><code class="language-bash">kubectl create configmap efs-provisioner \
---from-literal=file.system.id=${file_sys_id} \
---from-literal=aws.region=us-east-1 \
---from-literal=provisioner.name=aws-efs
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create configmap efs-provisioner <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>--from-literal<span style="color:#f92672">=</span>file.system.id<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>file_sys_id<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>--from-literal<span style="color:#f92672">=</span>aws.region<span style="color:#f92672">=</span>us-east-1 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>--from-literal<span style="color:#f92672">=</span>provisioner.name<span style="color:#f92672">=</span>aws-efs</code></pre></div>
 
 <ol>
 <li>Create <code>Deployment</code>.</li>
 </ol>
 
-<pre><code class="language-yaml">kind: Deployment
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
   name: efs-provisioner
 spec:
-  replicas: 1
+  replicas: <span style="color:#ae81ff">1</span>
   strategy:
     type: Recreate
   template:
@@ -350,7 +344,7 @@ spec:
       serviceAccount: efs-provisioner
       containers:
         - name: efs-provisioner
-          image: quay.io/external_storage/efs-provisioner:v0.1.0
+          image: quay.io/external_storage/efs-provisioner:v0.<span style="color:#ae81ff">1.0</span>
           env:
             - name: FILE_SYSTEM_ID
               valueFrom:
@@ -373,54 +367,48 @@ spec:
       volumes:
         - name: pv-volume
           nfs:
-            server: &lt;file system id&gt;.efs.us-east-1.amazonaws.com
-            path: /pvs
-</code></pre>
+            server: &lt;file system id&gt;.efs.us-east-<span style="color:#ae81ff">1.</span>amazonaws.com
+            path: /pvs</code></pre></div>
 
-<pre><code class="language-bash">kubectl apply -f deployment.yaml
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl apply -f deployment.yaml</code></pre></div>
 
 <h1 id="create-storageclass-on-k8s-cluster">Create <code>StorageClass</code> on k8s cluster</h1>
 
-<pre><code class="language-yaml">kind: StorageClass
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: StorageClass
 apiVersion: storage.k8s.io/v1beta1
 metadata:
   name: aws-efs
-provisioner: aws-efs
-</code></pre>
+provisioner: aws-efs</code></pre></div>
 
-<pre><code class="language-bash">kubectl create -f sc.yaml
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f sc.yaml</code></pre></div>
 
 <h1 id="create-pvc">Create PVC</h1>
 
 <p>Note: For every <code>PersistentVolumeClaim</code> you make, it will make a subdirectory in EFS under <code>/pvs/pvc-&lt;claim_id&gt;</code>.</p>
 
-<pre><code class="language-yaml">kind: PersistentVolumeClaim
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: efs
   annotations:
-    volume.beta.kubernetes.io/storage-class: &quot;aws-efs&quot;
+    volume.beta.kubernetes.io/storage-class: <span style="color:#e6db74">&#34;aws-efs&#34;</span>
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 500Gi
-</code></pre>
+      storage: 500Gi</code></pre></div>
 
-<pre><code class="language-bash">kubectl create -f pvc.yaml
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f pvc.yaml</code></pre></div>
 
 <h1 id="use-pvc">Use PVC</h1>
 
-<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: efs-test
 spec:
-  replicas: 1
+  replicas: <span style="color:#ae81ff">1</span>
   template:
     metadata:
       labels:
@@ -435,8 +423,7 @@ spec:
       volumes:
         - name: efs
           persistentVolumeClaim:
-            claimName: efs
-</code></pre>
+            claimName: efs</code></pre></div>
 
 
   
