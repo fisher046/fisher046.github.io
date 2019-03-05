@@ -1,1 +1,2 @@
-User-agent: *\nDisallow:
+User-agent: *
+Sitemap: https://fisher046.github.io/sitemap.xml

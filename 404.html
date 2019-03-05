@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Huan Zhang&#39;s blog</title>
+  <title>404 page not found - Huan Zhang&#39;s blog</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -26,9 +26,7 @@
 <meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 
 
-<link rel="canonical" href="https://fisher046.github.io/" />
-  <link href="https://fisher046.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Huan Zhang&#39;s blog" />
-  <link href="https://fisher046.github.io/index.xml" rel="feed" type="application/rss+xml" title="Huan Zhang&#39;s blog" />
+<link rel="canonical" href="" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -40,18 +38,17 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="Huan Zhang&#39;s blog" />
+<meta property="og:title" content="404 Page not found" />
 <meta property="og:description" content="Huan Zhang&#39;s blog." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://fisher046.github.io/" />
+<meta property="og:url" content="" />
 
-<meta property="og:updated_time" content="2019-03-05T09:36:00&#43;08:00"/>
 
-<meta itemprop="name" content="Huan Zhang&#39;s blog">
+<meta itemprop="name" content="404 Page not found">
 <meta itemprop="description" content="Huan Zhang&#39;s blog.">
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Huan Zhang&#39;s blog"/>
+<meta name="twitter:title" content="404 Page not found"/>
 <meta name="twitter:description" content="Huan Zhang&#39;s blog."/>
 
 <!--[if lte IE 9]>
@@ -112,83 +109,20 @@
     <main id="main" class="main">
       <div class="content-wrapper">
         <div id="content" class="content">
-          <section id="posts" class="posts">
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/">How to create PV dynamically on k8s with AWS EFS</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2019-03-05 </span>
-      
-        <span class="more-meta"> 311 words </span>
-        <span class="more-meta"> 2 mins read </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      Prerequisites  Create EFS on AWS  Selected Subnets should contain the k8s cluster subnets.
-Selected Security Groups should ensure the EFS can be accessible.
- Create one EC2 instance in the same VPC as EFS.
- SSH to the instance, mount the EFS and create folder.
-  1 2 3 4  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs   file_sys_id can be found from AWS EFS console.
-    </div>
-    <div class="read-more">
-      <a href="/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/" class="read-more-link">Read more..</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/tips-of-deploying-service-on-k8s/">Tips of deploying service on Kubernetes</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2018-10-21 </span>
-      
-        <span class="more-meta"> 535 words </span>
-        <span class="more-meta"> 3 mins read </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
-About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
- Function container Init container Monitor container Operator container     Function container is the service.
-Init container is responsible for initializing the service. For example, the configuration.
-    </div>
-    <div class="read-more">
-      <a href="/post/tips-of-deploying-service-on-k8s/" class="read-more-link">Read more..</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/understanding-the-nil-in-golang/">Understanding the nil in Golang</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2018-08-10 </span>
-      
-        <span class="more-meta"> 1214 words </span>
-        <span class="more-meta"> 3 mins read </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &#34;fmt&#34; ) type doError struct{} func (e *doError) Error() string { return &#34;&#34; } func do() error {
-    </div>
-    <div class="read-more">
-      <a href="/post/understanding-the-nil-in-golang/" class="read-more-link">Read more..</a>
-    </div>
-  </div>
-</article>
-
-    </section>
-  
-  <nav class="pagination">
-    
-    
-  </nav>
+          <div class="not-found">
+  <h1 class="error-emoji"></h1>
+  <p class="error-text">/* 404 page not found. */</p>
+  <p class="error-link"><a href="/">↑ Back Home ↑</a></p>
+</div>
+<script>
+  var errorEmojiContainer = document.getElementsByClassName('error-emoji')[0];
+  var emojiArray = [
+    '\\(o_o)/', '(o^^)o', '(˚Δ˚)b', '(^-^*)', '(≥o≤)', '(^_^)b', '(·_·)',
+    '(=\'X\'=)', '(>_<)', '(;-;)', '\\(^Д^)/',
+  ];
+  var errorEmoji = emojiArray[Math.floor(Math.random() * emojiArray.length)];
+  errorEmojiContainer.appendChild(document.createTextNode(errorEmoji));
+</script>
         </div>
         
 

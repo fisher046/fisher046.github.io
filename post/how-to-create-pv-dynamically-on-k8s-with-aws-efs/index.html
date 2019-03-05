@@ -1,220 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A method to create PV dynamically on k8s with AWS EFS.">
-  <meta name="generator" content="Hugo 0.49" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>How to create PV dynamically on k8s with AWS EFS - Huan Zhang&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-  <title>How to create PV dynamically on k8s with AWS EFS &middot; Huan Zhang</title>
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-  
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/pure-min.css">
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
-  <!--[if lte IE 8]>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-old-ie-min.css">
-  <![endif]-->
-  <!--[if gt IE 8]><!-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-min.css">
-  <!--<![endif]-->
 
-  <!--[if lte IE 8]>
-  <link rel="stylesheet" href="https://fisher046.github.io/css/side-menu-old-ie.css">
-  <![endif]-->
-  <!--[if gt IE 8]><!-->
-  <link rel="stylesheet" href="https://fisher046.github.io/css/side-menu.css">
-  <!--<![endif]-->
+<meta name="author" content="Huan Zhang" /><meta name="description" content="A method to create PV dynamically on k8s with AWS EFS." /><meta name="keywords" content="Kubernetes, k8s, Golang" />
 
-  <link rel="stylesheet" href="https://fisher046.github.io/css/blackburn.css">
 
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  
-  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
 
-  
-  
 
-  
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  
-  <script>hljs.initHighlightingOnLoad();</script>
-  
 
-  <link rel="shortcut icon" href="https://fisher046.github.io/img/favicon.ico" type="image/x-icon" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 
-  
-  
+
+<link rel="canonical" href="https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="How to create PV dynamically on k8s with AWS EFS" />
+<meta property="og:description" content="A method to create PV dynamically on k8s with AWS EFS." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/" />
+<meta property="article:published_time" content="2019-03-05T09:36:00&#43;08:00"/>
+<meta property="article:modified_time" content="2019-03-05T09:36:00&#43;08:00"/>
+
+<meta itemprop="name" content="How to create PV dynamically on k8s with AWS EFS">
+<meta itemprop="description" content="A method to create PV dynamically on k8s with AWS EFS.">
+
+
+<meta itemprop="datePublished" content="2019-03-05T09:36:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-03-05T09:36:00&#43;08:00" />
+<meta itemprop="wordCount" content="311">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to create PV dynamically on k8s with AWS EFS"/>
+<meta name="twitter:description" content="A method to create PV dynamically on k8s with AWS EFS."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
 
 </head>
-
-
 <body>
-<div id="layout">
-
-  
-<a href="#menu" id="menuLink" class="menu-link">
-  
-  <span></span>
-</a>
-<div id="menu">
-
-  <a class="pure-menu-heading brand" href="https://fisher046.github.io/">
-  <img src="https://fisher046.github.io/img/logo.png" width="105px">
-</a>
-
-
-  <div class="pure-menu">
-    <ul class="pure-menu-list">
-      
-      
-        <li class="pure-menu-item">
-          <a class="pure-menu-link" href="https://fisher046.github.io/topics/"><i class='fa fa-folder fa-fw'></i>Topics</a>
-      
-        </li>
-      
-      
-        <li class="pure-menu-item">
-          <a class="pure-menu-link" href="https://fisher046.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
-      
-        </li>
-      
-    </ul>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Huan Zhang&#39;s blog</a>
   </div>
-
-  <div class="pure-menu social">
-  <ul class="pure-menu-list">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
   </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Huan Zhang&#39;s blog</a>
 </div>
 
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-  <div>
-  <div class="small-print">
-    <small>&copy; 2018. All rights reserved.</small>
-  </div>
-  <div class="small-print">
-    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
-    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
-  </div>
-</div>
-
-</div>
-
-
-  <div id="main">
-
-
-<div class="header">
-  <h1>How to create PV dynamically on k8s with AWS EFS</h1>
-  <h2>A method to create PV dynamically on k8s with AWS EFS.</h2>
-</div>
-<div class="content">
-
-  <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>05 Mar 2019</time>
-  </div>
-
-  
-
-  
-  
-  
-  <div>
-    <i class="fa fa-folder fa-fw"></i>
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-      <a class="post-taxonomy-topic" href="https://fisher046.github.io/topics/kubernetes">Kubernetes</a>
-    
+    <header class="post-header">
+      <h1 class="post-title">How to create PV dynamically on k8s with AWS EFS</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-03-05 </span>
+        
+          <span class="more-meta"> 311 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#prepare-authorization">Prepare authorization</a></li>
+<li><a href="#deploy-efs-provisioner-to-k8s-cluster">Deploy EFS provisioner to k8s cluster</a></li>
+<li><a href="#create-storageclass-on-k8s-cluster">Create <code>StorageClass</code> on k8s cluster</a></li>
+<li><a href="#create-pvc">Create PVC</a></li>
+<li><a href="#use-pvc">Use PVC</a></li>
+</ul>
+</nav>
   </div>
-  
-  
-
-  
-
 </div>
-
-  
+    <div class="post-content">
+      
 
 <h1 id="prerequisites">Prerequisites</h1>
 
@@ -232,10 +166,20 @@
 <li><p>SSH to the instance, mount the EFS and create folder.</p></li>
 </ol>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">sudo yum install -y nfs-utils
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">sudo yum install -y nfs-utils
 sudo mkdir efs
-sudo mount -t nfs4 -o nfsvers<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>.1,rsize<span style="color:#f92672">=</span><span style="color:#ae81ff">1048576</span>,wsize<span style="color:#f92672">=</span><span style="color:#ae81ff">1048576</span>,hard,timeo<span style="color:#f92672">=</span><span style="color:#ae81ff">600</span>,retrans<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,noresvport <span style="color:#e6db74">${</span>file_sys_id<span style="color:#e6db74">}</span>.efs.us-east-1.amazonaws.com:/ efs
-sudo mkdir efs/pvs</code></pre></div>
+sudo mount -t nfs4 -o <span class="nv">nfsvers</span><span class="o">=</span><span class="m">4</span>.1,rsize<span class="o">=</span><span class="m">1048576</span>,wsize<span class="o">=</span><span class="m">1048576</span>,hard,timeo<span class="o">=</span><span class="m">600</span>,retrans<span class="o">=</span><span class="m">2</span>,noresvport <span class="si">${</span><span class="nv">file_sys_id</span><span class="si">}</span>.efs.us-east-1.amazonaws.com:/ efs
+sudo mkdir efs/pvs</code></pre></td></tr></table>
+</div>
+</div>
 
 <p><code>file_sys_id</code> can be found from AWS EFS console.</p>
 
@@ -245,73 +189,157 @@ sudo mkdir efs/pvs</code></pre></div>
 <li>Create <code>ServiceAccount</code>.</li>
 </ol>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: efs-provisioner</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML">apiVersion<span class="p">:</span><span class="w"> </span>v1<span class="w">
+</span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>ServiceAccount<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner</code></pre></td></tr></table>
+</div>
+</div>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f service_account.yaml</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f service_account.yaml</code></pre></td></tr></table>
+</div>
+</div>
 
 <ol>
 <li>Create <code>RBAC</code> rules.</li>
 </ol>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: efs-provisioner-runner
-rules:
-  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
-    resources: [<span style="color:#e6db74">&#34;persistentvolumes&#34;</span>]
-    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;create&#34;</span>, <span style="color:#e6db74">&#34;delete&#34;</span>]
-  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
-    resources: [<span style="color:#e6db74">&#34;persistentvolumeclaims&#34;</span>]
-    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;update&#34;</span>]
-  - apiGroups: [<span style="color:#e6db74">&#34;storage.k8s.io&#34;</span>]
-    resources: [<span style="color:#e6db74">&#34;storageclasses&#34;</span>]
-    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>]
-  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
-    resources: [<span style="color:#e6db74">&#34;events&#34;</span>]
-    verbs: [<span style="color:#e6db74">&#34;create&#34;</span>, <span style="color:#e6db74">&#34;update&#34;</span>, <span style="color:#e6db74">&#34;patch&#34;</span>]
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: run-efs-provisioner
-subjects:
-  - kind: ServiceAccount
-    name: efs-provisioner
-     <span style="color:#75715e"># replace with namespace where provisioner is deployed</span>
-    namespace: default
-roleRef:
-  kind: ClusterRole
-  name: efs-provisioner-runner
-  apiGroup: rbac.authorization.k8s.io
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: leader-locking-efs-provisioner
-rules:
-  - apiGroups: [<span style="color:#e6db74">&#34;&#34;</span>]
-    resources: [<span style="color:#e6db74">&#34;endpoints&#34;</span>]
-    verbs: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;create&#34;</span>, <span style="color:#e6db74">&#34;update&#34;</span>, <span style="color:#e6db74">&#34;patch&#34;</span>]
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: leader-locking-efs-provisioner
-subjects:
-  - kind: ServiceAccount
-    name: efs-provisioner
-    <span style="color:#75715e"># replace with namespace where provisioner is deployed</span>
-    namespace: default
-roleRef:
-  kind: Role
-  name: leader-locking-efs-provisioner
-  apiGroup: rbac.authorization.k8s.io</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>ClusterRole<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner-runner<span class="w">
+</span><span class="w"></span>rules<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>apiGroups<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>resources<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;persistentvolumes&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>verbs<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;get&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;list&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;watch&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;create&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;delete&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>apiGroups<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>resources<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;persistentvolumeclaims&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>verbs<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;get&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;list&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;watch&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;update&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>apiGroups<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;storage.k8s.io&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>resources<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;storageclasses&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>verbs<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;get&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;list&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;watch&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>apiGroups<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>resources<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;events&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>verbs<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;create&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;update&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;patch&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w"></span>---<span class="w">
+</span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>ClusterRoleBinding<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>run-efs-provisioner<span class="w">
+</span><span class="w"></span>subjects<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>kind<span class="p">:</span><span class="w"> </span>ServiceAccount<span class="w">
+</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">     </span><span class="c"># replace with namespace where provisioner is deployed</span><span class="w">
+</span><span class="w">    </span>namespace<span class="p">:</span><span class="w"> </span>default<span class="w">
+</span><span class="w"></span>roleRef<span class="p">:</span><span class="w">
+</span><span class="w">  </span>kind<span class="p">:</span><span class="w"> </span>ClusterRole<span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner-runner<span class="w">
+</span><span class="w">  </span>apiGroup<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io<span class="w">
+</span><span class="w"></span>---<span class="w">
+</span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>Role<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>leader-locking-efs-provisioner<span class="w">
+</span><span class="w"></span>rules<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>apiGroups<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>resources<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;endpoints&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">    </span>verbs<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;get&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;list&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;watch&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;create&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;update&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;patch&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w"></span>---<span class="w">
+</span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>RoleBinding<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>leader-locking-efs-provisioner<span class="w">
+</span><span class="w"></span>subjects<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>kind<span class="p">:</span><span class="w"> </span>ServiceAccount<span class="w">
+</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">    </span><span class="c"># replace with namespace where provisioner is deployed</span><span class="w">
+</span><span class="w">    </span>namespace<span class="p">:</span><span class="w"> </span>default<span class="w">
+</span><span class="w"></span>roleRef<span class="p">:</span><span class="w">
+</span><span class="w">  </span>kind<span class="p">:</span><span class="w"> </span>Role<span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>leader-locking-efs-provisioner<span class="w">
+</span><span class="w">  </span>apiGroup<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io</code></pre></td></tr></table>
+</div>
+</div>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f rbac.yaml</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f rbac.yaml</code></pre></td></tr></table>
+</div>
+</div>
 
 <h1 id="deploy-efs-provisioner-to-k8s-cluster">Deploy EFS provisioner to k8s cluster</h1>
 
@@ -319,169 +347,353 @@ roleRef:
 <li>Create <code>ConfigMap</code>.</li>
 </ol>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create configmap efs-provisioner <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>--from-literal<span style="color:#f92672">=</span>file.system.id<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>file_sys_id<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>--from-literal<span style="color:#f92672">=</span>aws.region<span style="color:#f92672">=</span>us-east-1 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>--from-literal<span style="color:#f92672">=</span>provisioner.name<span style="color:#f92672">=</span>aws-efs</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create configmap efs-provisioner <span class="se">\
+</span><span class="se"></span>--from-literal<span class="o">=</span>file.system.id<span class="o">=</span><span class="si">${</span><span class="nv">file_sys_id</span><span class="si">}</span> <span class="se">\
+</span><span class="se"></span>--from-literal<span class="o">=</span>aws.region<span class="o">=</span>us-east-1 <span class="se">\
+</span><span class="se"></span>--from-literal<span class="o">=</span>provisioner.name<span class="o">=</span>aws-efs</code></pre></td></tr></table>
+</div>
+</div>
 
 <ol>
 <li>Create <code>Deployment</code>.</li>
 </ol>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: Deployment
-apiVersion: extensions/v1beta1
-metadata:
-  name: efs-provisioner
-spec:
-  replicas: <span style="color:#ae81ff">1</span>
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: efs-provisioner
-    spec:
-      serviceAccount: efs-provisioner
-      containers:
-        - name: efs-provisioner
-          image: quay.io/external_storage/efs-provisioner:v0.<span style="color:#ae81ff">1.0</span>
-          env:
-            - name: FILE_SYSTEM_ID
-              valueFrom:
-                configMapKeyRef:
-                  name: efs-provisioner
-                  key: file.system.id
-            - name: AWS_REGION
-              valueFrom:
-                configMapKeyRef:
-                  name: efs-provisioner
-                  key: aws.region
-            - name: PROVISIONER_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: efs-provisioner
-                  key: provisioner.name
-          volumeMounts:
-            - name: pv-volume
-              mountPath: /persistentvolumes
-      volumes:
-        - name: pv-volume
-          nfs:
-            server: &lt;file system id&gt;.efs.us-east-<span style="color:#ae81ff">1.</span>amazonaws.com
-            path: /pvs</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>Deployment<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>extensions/v1beta1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w"></span>spec<span class="p">:</span><span class="w">
+</span><span class="w">  </span>replicas<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">  </span>strategy<span class="p">:</span><span class="w">
+</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span>Recreate<span class="w">
+</span><span class="w">  </span>template<span class="p">:</span><span class="w">
+</span><span class="w">    </span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">      </span>labels<span class="p">:</span><span class="w">
+</span><span class="w">        </span>app<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">    </span>spec<span class="p">:</span><span class="w">
+</span><span class="w">      </span>serviceAccount<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">      </span>containers<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">          </span>image<span class="p">:</span><span class="w"> </span>quay.io/external_storage/efs-provisioner<span class="p">:</span>v0.<span class="m">1.0</span><span class="w">
+</span><span class="w">          </span>env<span class="p">:</span><span class="w">
+</span><span class="w">            </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>FILE_SYSTEM_ID<span class="w">
+</span><span class="w">              </span>valueFrom<span class="p">:</span><span class="w">
+</span><span class="w">                </span>configMapKeyRef<span class="p">:</span><span class="w">
+</span><span class="w">                  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">                  </span>key<span class="p">:</span><span class="w"> </span>file.system.id<span class="w">
+</span><span class="w">            </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>AWS_REGION<span class="w">
+</span><span class="w">              </span>valueFrom<span class="p">:</span><span class="w">
+</span><span class="w">                </span>configMapKeyRef<span class="p">:</span><span class="w">
+</span><span class="w">                  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">                  </span>key<span class="p">:</span><span class="w"> </span>aws.region<span class="w">
+</span><span class="w">            </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>PROVISIONER_NAME<span class="w">
+</span><span class="w">              </span>valueFrom<span class="p">:</span><span class="w">
+</span><span class="w">                </span>configMapKeyRef<span class="p">:</span><span class="w">
+</span><span class="w">                  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
+</span><span class="w">                  </span>key<span class="p">:</span><span class="w"> </span>provisioner.name<span class="w">
+</span><span class="w">          </span>volumeMounts<span class="p">:</span><span class="w">
+</span><span class="w">            </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>pv-volume<span class="w">
+</span><span class="w">              </span>mountPath<span class="p">:</span><span class="w"> </span>/persistentvolumes<span class="w">
+</span><span class="w">      </span>volumes<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>pv-volume<span class="w">
+</span><span class="w">          </span>nfs<span class="p">:</span><span class="w">
+</span><span class="w">            </span>server<span class="p">:</span><span class="w"> </span>&lt;file<span class="w"> </span>system<span class="w"> </span>id&gt;.efs.us-east-<span class="m">1.</span>amazonaws.com<span class="w">
+</span><span class="w">            </span>path<span class="p">:</span><span class="w"> </span>/pvs</code></pre></td></tr></table>
+</div>
+</div>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl apply -f deployment.yaml</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl apply -f deployment.yaml</code></pre></td></tr></table>
+</div>
+</div>
 
 <h1 id="create-storageclass-on-k8s-cluster">Create <code>StorageClass</code> on k8s cluster</h1>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: StorageClass
-apiVersion: storage.k8s.io/v1beta1
-metadata:
-  name: aws-efs
-provisioner: aws-efs</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>StorageClass<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>storage.k8s.io/v1beta1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>aws-efs<span class="w">
+</span><span class="w"></span>provisioner<span class="p">:</span><span class="w"> </span>aws-efs</code></pre></td></tr></table>
+</div>
+</div>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f sc.yaml</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f sc.yaml</code></pre></td></tr></table>
+</div>
+</div>
 
 <h1 id="create-pvc">Create PVC</h1>
 
 <p>Note: For every <code>PersistentVolumeClaim</code> you make, it will make a subdirectory in EFS under <code>/pvs/pvc-&lt;claim_id&gt;</code>.</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: efs
-  annotations:
-    volume.beta.kubernetes.io/storage-class: <span style="color:#e6db74">&#34;aws-efs&#34;</span>
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 500Gi</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>PersistentVolumeClaim<span class="w">
+</span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>v1<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs<span class="w">
+</span><span class="w">  </span>annotations<span class="p">:</span><span class="w">
+</span><span class="w">    </span>volume.beta.kubernetes.io/storage-class<span class="p">:</span><span class="w"> </span><span class="s2">&#34;aws-efs&#34;</span><span class="w">
+</span><span class="w"></span>spec<span class="p">:</span><span class="w">
+</span><span class="w">  </span>accessModes<span class="p">:</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>ReadWriteMany<span class="w">
+</span><span class="w">  </span>resources<span class="p">:</span><span class="w">
+</span><span class="w">    </span>requests<span class="p">:</span><span class="w">
+</span><span class="w">      </span>storage<span class="p">:</span><span class="w"> </span>500Gi</code></pre></td></tr></table>
+</div>
+</div>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash">kubectl create -f pvc.yaml</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f pvc.yaml</code></pre></td></tr></table>
+</div>
+</div>
 
 <h1 id="use-pvc">Use PVC</h1>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML">apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: efs-test
-spec:
-  replicas: <span style="color:#ae81ff">1</span>
-  template:
-    metadata:
-      labels:
-        app: efs-test
-    spec:
-      containers:
-      - name: efs-test
-        image: alpine:latest
-        volumeMounts:
-        - mountPath: /efs_vol
-          name: efs
-      volumes:
-        - name: efs
-          persistentVolumeClaim:
-            claimName: efs</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-YAML" data-lang="YAML">apiVersion<span class="p">:</span><span class="w"> </span>extensions/v1beta1<span class="w">
+</span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>Deployment<span class="w">
+</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-test<span class="w">
+</span><span class="w"></span>spec<span class="p">:</span><span class="w">
+</span><span class="w">  </span>replicas<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">  </span>template<span class="p">:</span><span class="w">
+</span><span class="w">    </span>metadata<span class="p">:</span><span class="w">
+</span><span class="w">      </span>labels<span class="p">:</span><span class="w">
+</span><span class="w">        </span>app<span class="p">:</span><span class="w"> </span>efs-test<span class="w">
+</span><span class="w">    </span>spec<span class="p">:</span><span class="w">
+</span><span class="w">      </span>containers<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>efs-test<span class="w">
+</span><span class="w">        </span>image<span class="p">:</span><span class="w"> </span>alpine<span class="p">:</span>latest<span class="w">
+</span><span class="w">        </span>volumeMounts<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>mountPath<span class="p">:</span><span class="w"> </span>/efs_vol<span class="w">
+</span><span class="w">          </span>name<span class="p">:</span><span class="w"> </span>efs<span class="w">
+</span><span class="w">      </span>volumes<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>efs<span class="w">
+</span><span class="w">          </span>persistentVolumeClaim<span class="p">:</span><span class="w">
+</span><span class="w">            </span>claimName<span class="p">:</span><span class="w"> </span>efs</code></pre></td></tr></table>
+</div>
+</div>
 
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Huan Zhang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-03-05
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/tips-of-deploying-service-on-k8s/">
+            <span class="next-text nav-default">Tips of deploying service on Kubernetes</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    (function() {
+      
+      
+      if (window.location.hostname === 'localhost') return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'fisher046';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://fisher046.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
   
-<div class="prev-next-post pure-g">
-  <div class="pure-u-1-24" style="text-align: left;">
-    
-    <a href="https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/"><i class="fa fa-chevron-left"></i></a>
-    
-  </div>
-  <div class="pure-u-10-24">
-    
-    <nav class="prev">
-      <a href="https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/">Tips of deploying service on Kubernetes</a>
-    </nav>
-    
-  </div>
-  <div class="pure-u-2-24">
-    &nbsp;
-  </div>
-  <div class="pure-u-10-24">
-    
-  </div>
-  <div class="pure-u-1-24" style="text-align: right;">
-    
-  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Huan Zhang</span>
+  </span>
 </div>
+    </footer>
 
-
-
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
   
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
-    
-    
-    if (window.location.hostname == "localhost")
-        return;
-
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'fisher046';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
 
 
-</div>
 
-</div>
-</div>
-<script src="https://fisher046.github.io/js/ui.js"></script>
+
 
 
 
 
 </body>
 </html>
-
