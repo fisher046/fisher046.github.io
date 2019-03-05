@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</loc>
+    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/</loc>
     <lastmod>2018-10-21T13:35:00+08:00</lastmod>
   </url>
@@ -20,19 +25,19 @@
   
   <url>
     <loc>https://fisher046.github.io/</loc>
-    <lastmod>2018-10-21T13:35:00+08:00</lastmod>
+    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/topics/kubernetes/</loc>
-    <lastmod>2018-10-21T13:35:00+08:00</lastmod>
+    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/post/</loc>
-    <lastmod>2018-10-21T13:35:00+08:00</lastmod>
+    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   

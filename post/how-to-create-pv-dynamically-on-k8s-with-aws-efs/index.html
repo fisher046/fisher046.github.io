@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A method to create PV dynamically on k8s with AWS EFS.">
+  <meta name="generator" content="Hugo 0.49" />
+
+  <title>How to create PV dynamically on k8s with AWS EFS &middot; Huan Zhang</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://fisher046.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://fisher046.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://fisher046.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://fisher046.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  <a class="pure-menu-heading brand" href="https://fisher046.github.io/">
+  <img src="https://fisher046.github.io/img/logo.png" width="105px">
+</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://fisher046.github.io/topics/"><i class='fa fa-folder fa-fw'></i>Topics</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://fisher046.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2018. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>How to create PV dynamically on k8s with AWS EFS</h1>
+  <h2>A method to create PV dynamically on k8s with AWS EFS.</h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>05 Mar 2019</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://fisher046.github.io/topics/kubernetes">Kubernetes</a>
+    
+  </div>
+  
+  
+
+  
+
+</div>
+
+  
+
+<h1 id="prerequisites">Prerequisites</h1>
+
+<ol>
+<li>Create EFS on AWS</li>
+</ol>
+
+<p>Selected Subnets should contain the k8s cluster subnets.</p>
+
+<p>Selected Security Groups should ensure the EFS can be accessible.</p>
+
+<ol>
+<li><p>Create one EC2 instance in the same VPC as EFS.</p></li>
+
+<li><p>SSH to the instance, mount the EFS and create folder.</p></li>
+</ol>
+
+<pre><code class="language-bash">sudo yum install -y nfs-utils
+sudo mkdir efs
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs
+sudo mkdir efs/pvs
+</code></pre>
+
+<p><code>file_sys_id</code> can be found from AWS EFS console.</p>
+
+<h1 id="prepare-authorization">Prepare authorization</h1>
+
+<ol>
+<li>Create <code>ServiceAccount</code>.</li>
+</ol>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: efs-provisioner
+</code></pre>
+
+<pre><code class="language-bash">kubectl create -f service_account.yaml
+</code></pre>
+
+<ol>
+<li>Create <code>RBAC</code> rules.</li>
+</ol>
+
+<pre><code class="language-yaml">kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: efs-provisioner-runner
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;persistentvolumes&quot;]
+    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;delete&quot;]
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;persistentvolumeclaims&quot;]
+    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;update&quot;]
+  - apiGroups: [&quot;storage.k8s.io&quot;]
+    resources: [&quot;storageclasses&quot;]
+    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;events&quot;]
+    verbs: [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: run-efs-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: efs-provisioner
+     # replace with namespace where provisioner is deployed
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: efs-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: leader-locking-efs-provisioner
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;endpoints&quot;]
+    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: leader-locking-efs-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: efs-provisioner
+    # replace with namespace where provisioner is deployed
+    namespace: default
+roleRef:
+  kind: Role
+  name: leader-locking-efs-provisioner
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+
+<pre><code class="language-bash">kubectl create -f rbac.yaml
+</code></pre>
+
+<h1 id="deploy-efs-provisioner-to-k8s-cluster">Deploy EFS provisioner to k8s cluster</h1>
+
+<ol>
+<li>Create <code>ConfigMap</code>.</li>
+</ol>
+
+<pre><code class="language-bash">kubectl create configmap efs-provisioner \
+--from-literal=file.system.id=${file_sys_id} \
+--from-literal=aws.region=us-east-1 \
+--from-literal=provisioner.name=aws-efs
+</code></pre>
+
+<ol>
+<li>Create <code>Deployment</code>.</li>
+</ol>
+
+<pre><code class="language-yaml">kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: efs-provisioner
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: efs-provisioner
+    spec:
+      serviceAccount: efs-provisioner
+      containers:
+        - name: efs-provisioner
+          image: quay.io/external_storage/efs-provisioner:v0.1.0
+          env:
+            - name: FILE_SYSTEM_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: efs-provisioner
+                  key: file.system.id
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: efs-provisioner
+                  key: aws.region
+            - name: PROVISIONER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: efs-provisioner
+                  key: provisioner.name
+          volumeMounts:
+            - name: pv-volume
+              mountPath: /persistentvolumes
+      volumes:
+        - name: pv-volume
+          nfs:
+            server: &lt;file system id&gt;.efs.us-east-1.amazonaws.com
+            path: /pvs
+</code></pre>
+
+<pre><code class="language-bash">kubectl apply -f deployment.yaml
+</code></pre>
+
+<h1 id="create-storageclass-on-k8s-cluster">Create <code>StorageClass</code> on k8s cluster</h1>
+
+<pre><code class="language-yaml">kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: aws-efs
+provisioner: aws-efs
+</code></pre>
+
+<pre><code class="language-bash">kubectl create -f sc.yaml
+</code></pre>
+
+<h1 id="create-pvc">Create PVC</h1>
+
+<p>Note: For every <code>PersistentVolumeClaim</code> you make, it will make a subdirectory in EFS under <code>/pvs/pvc-&lt;claim_id&gt;</code>.</p>
+
+<pre><code class="language-yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: efs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: &quot;aws-efs&quot;
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+</code></pre>
+
+<pre><code class="language-bash">kubectl create -f pvc.yaml
+</code></pre>
+
+<h1 id="use-pvc">Use PVC</h1>
+
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: efs-test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: efs-test
+    spec:
+      containers:
+      - name: efs-test
+        image: alpine:latest
+        volumeMounts:
+        - mountPath: /efs_vol
+          name: efs
+      volumes:
+        - name: efs
+          persistentVolumeClaim:
+            claimName: efs
+</code></pre>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/">Tips of deploying service on Kubernetes</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'fisher046';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+</div>
+</div>
+<script src="https://fisher046.github.io/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

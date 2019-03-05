@@ -198,6 +198,53 @@
   
     <article>
   <header>
+    <h2><a href="https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/">How to create PV dynamically on k8s with AWS EFS</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>05 Mar 2019</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://fisher046.github.io/topics/kubernetes">Kubernetes</a>
+    
+  </div>
+  
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Prerequisites  Create EFS on AWS  Selected Subnets should contain the k8s cluster subnets.
+Selected Security Groups should ensure the EFS can be accessible.
+ Create one EC2 instance in the same VPC as EFS.
+ SSH to the instance, mount the EFS and create folder.
+  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs  file_sys_id can be found from AWS EFS console.
+  </p>
+
+  
+  <footer>
+    <a href="https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/">Tips of deploying service on Kubernetes</a></h2>
 
     <div class="post-meta">
