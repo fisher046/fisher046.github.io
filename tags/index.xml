@@ -6,9 +6,37 @@
     <description>Recent content in Tags on Huan Zhang&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <lastBuildDate>Tue, 05 Mar 2019 09:36:00 +0800</lastBuildDate>
     
 	<atom:link href="https://fisher046.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>EFS</title>
+      <link>https://fisher046.github.io/tags/efs/</link>
+      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/tags/efs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://fisher046.github.io/tags/kubernetes/</link>
+      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Persistent Volume</title>
+      <link>https://fisher046.github.io/tags/persistent-volume/</link>
+      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/tags/persistent-volume/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Persistent Volume on Huan Zhang&#39;s blog</title>
+    <link>https://fisher046.github.io/tags/persistent-volume/</link>
+    <description>Recent content in Persistent Volume on Huan Zhang&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 05 Mar 2019 09:36:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://fisher046.github.io/tags/persistent-volume/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to create PV dynamically on k8s with AWS EFS</title>
+      <link>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</link>
+      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</guid>
+      <description>Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -16,7 +16,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Huan Zhang" /><meta name="description" content="A method to create PV dynamically on k8s with AWS EFS." /><meta name="keywords" content="Kubernetes, k8s, Golang" />
+<meta name="author" content="Huan Zhang" /><meta name="description" content="Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words." /><meta name="keywords" content="Kubernetes, k8s, Golang" />
 
 
 
@@ -39,26 +40,29 @@
 
 
 <meta property="og:title" content="How to create PV dynamically on k8s with AWS EFS" />
-<meta property="og:description" content="A method to create PV dynamically on k8s with AWS EFS." />
+<meta property="og:description" content="Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/" />
 <meta property="article:published_time" content="2019-03-05T09:36:00&#43;08:00"/>
-<meta property="article:modified_time" content="2019-03-05T09:36:00&#43;08:00"/>
+<meta property="article:modified_time" content="2019-03-06T09:31:00&#43;08:00"/>
 
 <meta itemprop="name" content="How to create PV dynamically on k8s with AWS EFS">
-<meta itemprop="description" content="A method to create PV dynamically on k8s with AWS EFS.">
+<meta itemprop="description" content="Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words.">
 
 
 <meta itemprop="datePublished" content="2019-03-05T09:36:00&#43;08:00" />
-<meta itemprop="dateModified" content="2019-03-05T09:36:00&#43;08:00" />
-<meta itemprop="wordCount" content="311">
+<meta itemprop="dateModified" content="2019-03-06T09:31:00&#43;08:00" />
+<meta itemprop="wordCount" content="424">
 
 
 
-<meta itemprop="keywords" content="" />
+<meta itemprop="keywords" content="Kubernetes,EFS,Persistent Volume," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="How to create PV dynamically on k8s with AWS EFS"/>
-<meta name="twitter:description" content="A method to create PV dynamically on k8s with AWS EFS."/>
+<meta name="twitter:description" content="Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -128,7 +132,7 @@
         <div class="post-category">
             <a href="/categories/kubernetes/"> Kubernetes </a>
             </div>
-          <span class="more-meta"> 311 words </span>
+          <span class="more-meta"> 424 words </span>
           <span class="more-meta"> 2 mins read </span>
         
       </div>
@@ -139,12 +143,18 @@
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
 <ul>
-<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#preface">Preface</a></li>
+<li><a href="#steps-on-aws">Steps on AWS</a>
+<ul>
+<li><a href="#create-efs-on-aws">Create EFS on AWS</a></li>
+<li><a href="#create-folder-in-efs-for-pv">Create folder in EFS for PV</a></li>
+</ul></li>
+<li><a href="#steps-on-kubernetes-cluster">Steps on Kubernetes cluster</a>
+<ul>
 <li><a href="#prepare-authorization">Prepare authorization</a></li>
-<li><a href="#deploy-efs-provisioner-to-k8s-cluster">Deploy EFS provisioner to k8s cluster</a></li>
-<li><a href="#create-storageclass-on-k8s-cluster">Create <code>StorageClass</code> on k8s cluster</a></li>
-<li><a href="#create-pvc">Create PVC</a></li>
-<li><a href="#use-pvc">Use PVC</a></li>
+<li><a href="#deploy-efs-provisioner">Deploy EFS provisioner</a></li>
+<li><a href="#use-the-created-storage-class-to-create-pvc">Use the created storage class to create PVC</a></li>
+</ul></li>
 </ul>
 </nav>
   </div>
@@ -152,76 +162,69 @@
     <div class="post-content">
       
 
-<h1 id="prerequisites">Prerequisites</h1>
+<h1 id="preface">Preface</h1>
 
-<ol>
-<li>Create EFS on AWS</li>
-</ol>
+<p>When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.</p>
 
-<p>Selected Subnets should contain the k8s cluster subnets.</p>
+<p>My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words.</p>
 
-<p>Selected Security Groups should ensure the EFS can be accessible.</p>
+<h1 id="steps-on-aws">Steps on AWS</h1>
 
-<ol>
-<li><p>Create one EC2 instance in the same VPC as EFS.</p></li>
+<h2 id="create-efs-on-aws">Create EFS on AWS</h2>
 
-<li><p>SSH to the instance, mount the EFS and create folder.</p></li>
-</ol>
+<p>This step can be referenced to <a href="https://docs.aws.amazon.com/efs/latest/ug/getting-started.html">https://docs.aws.amazon.com/efs/latest/ug/getting-started.html</a>.</p>
 
+<p>I only test the case that Kubernetes cluster and EFS are in the same VPC.</p>
+
+<h2 id="create-folder-in-efs-for-pv">Create folder in EFS for PV</h2>
+
+<p>Create one EC2 instance and SSH to it, mount the EFS and create folder.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">sudo yum install -y nfs-utils
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo yum install -y nfs-utils
 sudo mkdir efs
 sudo mount -t nfs4 -o <span class="nv">nfsvers</span><span class="o">=</span><span class="m">4</span>.1,rsize<span class="o">=</span><span class="m">1048576</span>,wsize<span class="o">=</span><span class="m">1048576</span>,hard,timeo<span class="o">=</span><span class="m">600</span>,retrans<span class="o">=</span><span class="m">2</span>,noresvport <span class="si">${</span><span class="nv">file_sys_id</span><span class="si">}</span>.efs.us-east-1.amazonaws.com:/ efs
 sudo mkdir efs/pvs</code></pre></td></tr></table>
 </div>
 </div>
+<p><code>file_sys_id</code> can be found from AWS EFS page.</p>
 
-<p><code>file_sys_id</code> can be found from AWS EFS console.</p>
+<h1 id="steps-on-kubernetes-cluster">Steps on Kubernetes cluster</h1>
 
-<h1 id="prepare-authorization">Prepare authorization</h1>
+<h2 id="prepare-authorization">Prepare authorization</h2>
 
-<ol>
-<li>Create <code>ServiceAccount</code>.</li>
-</ol>
-
+<p>Create one service account for EFS provisioner, which will help you create PV with EFS.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt">1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML">apiVersion<span class="p">:</span><span class="w"> </span>v1<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml">apiVersion<span class="p">:</span><span class="w"> </span>v1<span class="w">
 </span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>ServiceAccount<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
 </span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner</code></pre></td></tr></table>
 </div>
-</div>
-
-<div class="highlight"><div class="chroma">
+</div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f service_account.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl create -f service_account.yaml</code></pre></td></tr></table>
 </div>
 </div>
-
-<ol>
-<li>Create <code>RBAC</code> rules.</li>
-</ol>
-
+<p>Authorize the service account, reference to <a href="https://github.com/kubernetes-incubator/external-storage/blob/master/aws/efs/deploy/rbac.yaml">https://github.com/kubernetes-incubator/external-storage/blob/master/aws/efs/deploy/rbac.yaml</a>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -277,7 +280,7 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
 </span><span class="lnt">54
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>ClusterRole<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml">kind<span class="p">:</span><span class="w"> </span>ClusterRole<span class="w">
 </span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
 </span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner-runner<span class="w">
@@ -333,44 +336,38 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
 </span><span class="w">  </span>apiGroup<span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io</code></pre></td></tr></table>
 </div>
 </div>
-
+<p>This example is using <code>default</code> namespace, change it if you need to deploy in different namespace.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f rbac.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl create -f rbac.yaml</code></pre></td></tr></table>
 </div>
 </div>
+<h2 id="deploy-efs-provisioner">Deploy EFS provisioner</h2>
 
-<h1 id="deploy-efs-provisioner-to-k8s-cluster">Deploy EFS provisioner to k8s cluster</h1>
+<p>Create ConfigMap.</p>
 
-<ol>
-<li>Create <code>ConfigMap</code>.</li>
-</ol>
-
+<p><code>file_sys_id</code> can be found from AWS EFS.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create configmap efs-provisioner <span class="se">\
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl create configmap efs-provisioner <span class="se">\
 </span><span class="se"></span>--from-literal<span class="o">=</span>file.system.id<span class="o">=</span><span class="si">${</span><span class="nv">file_sys_id</span><span class="si">}</span> <span class="se">\
 </span><span class="se"></span>--from-literal<span class="o">=</span>aws.region<span class="o">=</span>us-east-1 <span class="se">\
 </span><span class="se"></span>--from-literal<span class="o">=</span>provisioner.name<span class="o">=</span>aws-efs</code></pre></td></tr></table>
 </div>
 </div>
-
-<ol>
-<li>Create <code>Deployment</code>.</li>
-</ol>
-
+<p>Create Deployment.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -413,7 +410,7 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
 </span><span class="lnt">41
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>Deployment<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml">kind<span class="p">:</span><span class="w"> </span>Deployment<span class="w">
 </span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>extensions/v1beta1<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
 </span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-provisioner<span class="w">
@@ -455,52 +452,44 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
 </span><span class="w">            </span>server<span class="p">:</span><span class="w"> </span>&lt;file<span class="w"> </span>system<span class="w"> </span>id&gt;.efs.us-east-<span class="m">1.</span>amazonaws.com<span class="w">
 </span><span class="w">            </span>path<span class="p">:</span><span class="w"> </span>/pvs</code></pre></td></tr></table>
 </div>
-</div>
-
-<div class="highlight"><div class="chroma">
+</div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl apply -f deployment.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl apply -f deployment.yaml</code></pre></td></tr></table>
 </div>
 </div>
-
-<h1 id="create-storageclass-on-k8s-cluster">Create <code>StorageClass</code> on k8s cluster</h1>
-
+<p>Create StorageClass.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt">1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>StorageClass<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml">kind<span class="p">:</span><span class="w"> </span>StorageClass<span class="w">
 </span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>storage.k8s.io/v1beta1<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
 </span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>aws-efs<span class="w">
 </span><span class="w"></span>provisioner<span class="p">:</span><span class="w"> </span>aws-efs</code></pre></td></tr></table>
 </div>
-</div>
-
-<div class="highlight"><div class="chroma">
+</div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f sc.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl create -f sc.yaml</code></pre></td></tr></table>
 </div>
 </div>
+<h2 id="use-the-created-storage-class-to-create-pvc">Use the created storage class to create PVC</h2>
 
-<h1 id="create-pvc">Create PVC</h1>
-
-<p>Note: For every <code>PersistentVolumeClaim</code> you make, it will make a subdirectory in EFS under <code>/pvs/pvc-&lt;claim_id&gt;</code>.</p>
-
+<p>For every PVC you make, it will make a subdirectory in EFS under <code>/pvs/pvc-&lt;claim_id&gt;</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -514,7 +503,7 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML">kind<span class="p">:</span><span class="w"> </span>PersistentVolumeClaim<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml">kind<span class="p">:</span><span class="w"> </span>PersistentVolumeClaim<span class="w">
 </span><span class="w"></span>apiVersion<span class="p">:</span><span class="w"> </span>v1<span class="w">
 </span><span class="w"></span>metadata<span class="p">:</span><span class="w">
 </span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs<span class="w">
@@ -527,67 +516,15 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
 </span><span class="w">    </span>requests<span class="p">:</span><span class="w">
 </span><span class="w">      </span>storage<span class="p">:</span><span class="w"> </span>500Gi</code></pre></td></tr></table>
 </div>
-</div>
-
-<div class="highlight"><div class="chroma">
+</div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash"><span class="lnt">1
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Bash" data-lang="Bash">kubectl create -f pvc.yaml</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl create -f pvc.yaml</code></pre></td></tr></table>
 </div>
 </div>
-
-<h1 id="use-pvc">Use PVC</h1>
-
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-YAML" data-lang="YAML">apiVersion<span class="p">:</span><span class="w"> </span>extensions/v1beta1<span class="w">
-</span><span class="w"></span>kind<span class="p">:</span><span class="w"> </span>Deployment<span class="w">
-</span><span class="w"></span>metadata<span class="p">:</span><span class="w">
-</span><span class="w">  </span>name<span class="p">:</span><span class="w"> </span>efs-test<span class="w">
-</span><span class="w"></span>spec<span class="p">:</span><span class="w">
-</span><span class="w">  </span>replicas<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">  </span>template<span class="p">:</span><span class="w">
-</span><span class="w">    </span>metadata<span class="p">:</span><span class="w">
-</span><span class="w">      </span>labels<span class="p">:</span><span class="w">
-</span><span class="w">        </span>app<span class="p">:</span><span class="w"> </span>efs-test<span class="w">
-</span><span class="w">    </span>spec<span class="p">:</span><span class="w">
-</span><span class="w">      </span>containers<span class="p">:</span><span class="w">
-</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>efs-test<span class="w">
-</span><span class="w">        </span>image<span class="p">:</span><span class="w"> </span>alpine<span class="p">:</span>latest<span class="w">
-</span><span class="w">        </span>volumeMounts<span class="p">:</span><span class="w">
-</span><span class="w">        </span>-<span class="w"> </span>mountPath<span class="p">:</span><span class="w"> </span>/efs_vol<span class="w">
-</span><span class="w">          </span>name<span class="p">:</span><span class="w"> </span>efs<span class="w">
-</span><span class="w">      </span>volumes<span class="p">:</span><span class="w">
-</span><span class="w">        </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>efs<span class="w">
-</span><span class="w">          </span>persistentVolumeClaim<span class="p">:</span><span class="w">
-</span><span class="w">            </span>claimName<span class="p">:</span><span class="w"> </span>efs</code></pre></td></tr></table>
-</div>
-</div>
+<p>The PVC can be in same or different namespace from EFS provisioner.</p>
 
     </div>
 
@@ -599,7 +536,7 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-        2019-03-05
+        2019-03-06
         
     </span>
   </p>
@@ -607,7 +544,11 @@ sudo mkdir efs/pvs</code></pre></td></tr></table>
   
 </div>
 <footer class="post-footer">
-      
+      <div class="post-tags">
+          <a href="/tags/kubernetes/">Kubernetes</a>
+          <a href="/tags/efs/">EFS</a>
+          <a href="/tags/persistent-volume/">Persistent Volume</a>
+          </div>
       <nav class="post-nav">
         
         <a class="next" href="/post/tips-of-deploying-service-on-k8s/">

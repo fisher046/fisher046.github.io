@@ -17,7 +17,7 @@
       <pubDate>Fri, 10 Aug 2018 17:00:00 +0800</pubDate>
       
       <guid>https://fisher046.github.io/post/understanding-the-nil-in-golang/</guid>
-      <description>Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &amp;#34;fmt&amp;#34; ) type doError struct{} func (e *doError) Error() string { return &amp;#34;&amp;#34; } func do() error {</description>
+      <description>title: &amp;ldquo;Understanding the nil in Golang&amp;rdquo; date: 2018-08-10T17:00:00+08:00 lastmod: 2018-08-10T17:00:00+08:00 draft: false tags: [&amp;ldquo;Golang&amp;rdquo;, &amp;ldquo;nil&amp;rdquo;] categories: [&amp;ldquo;Golang&amp;rdquo;] Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &amp;#34;fmt&amp;#34;</description>
     </item>
     
   </channel>

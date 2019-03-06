@@ -16,7 +16,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Huan Zhang" /><meta name="description" content="Some tips from experience" /><meta name="keywords" content="Kubernetes, k8s, Golang" />
+<meta name="author" content="Huan Zhang" /><meta name="description" content="Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
+About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
+ Function container Init container Monitor container Operator container     Function container is the service.
+Init container is responsible for initializing the service. For example, the configuration." /><meta name="keywords" content="Kubernetes, k8s, Golang" />
 
 
 
@@ -39,14 +42,20 @@
 
 
 <meta property="og:title" content="Tips of deploying service on Kubernetes" />
-<meta property="og:description" content="Some tips from experience" />
+<meta property="og:description" content="Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
+About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
+ Function container Init container Monitor container Operator container     Function container is the service.
+Init container is responsible for initializing the service. For example, the configuration." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/" />
 <meta property="article:published_time" content="2018-10-21T13:35:00&#43;08:00"/>
 <meta property="article:modified_time" content="2018-10-21T13:35:00&#43;08:00"/>
 
 <meta itemprop="name" content="Tips of deploying service on Kubernetes">
-<meta itemprop="description" content="Some tips from experience">
+<meta itemprop="description" content="Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
+About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
+ Function container Init container Monitor container Operator container     Function container is the service.
+Init container is responsible for initializing the service. For example, the configuration.">
 
 
 <meta itemprop="datePublished" content="2018-10-21T13:35:00&#43;08:00" />
@@ -55,10 +64,13 @@
 
 
 
-<meta itemprop="keywords" content="" />
+<meta itemprop="keywords" content="Kubernetes," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tips of deploying service on Kubernetes"/>
-<meta name="twitter:description" content="Some tips from experience"/>
+<meta name="twitter:description" content="Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
+About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
+ Function container Init container Monitor container Operator container     Function container is the service.
+Init container is responsible for initializing the service. For example, the configuration."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -539,7 +551,9 @@
   
 </div>
 <footer class="post-footer">
-      
+      <div class="post-tags">
+          <a href="/tags/kubernetes/">Kubernetes</a>
+          </div>
       <nav class="post-nav">
         <a class="prev" href="/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/">
             <i class="iconfont icon-left"></i>

@@ -17,11 +17,8 @@
       <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
       
       <guid>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</guid>
-      <description>Prerequisites  Create EFS on AWS  Selected Subnets should contain the k8s cluster subnets.
-Selected Security Groups should ensure the EFS can be accessible.
- Create one EC2 instance in the same VPC as EFS.
- SSH to the instance, mount the EFS and create folder.
-  1 2 3 4  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs   file_sys_id can be found from AWS EFS console.</description>
+      <description>Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words.</description>
     </item>
     
     <item>

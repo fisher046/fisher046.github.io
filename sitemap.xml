@@ -4,7 +4,7 @@
   
   <url>
     <loc>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</loc>
-    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -30,6 +30,13 @@
   </url>
   
   <url>
+    <loc>https://fisher046.github.io/tags/efs/</loc>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://fisher046.github.io/categories/golang/</loc>
     <lastmod>2018-08-10T17:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -38,27 +45,42 @@
   
   <url>
     <loc>https://fisher046.github.io/</loc>
-    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fisher046.github.io/tags/kubernetes/</loc>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/categories/kubernetes/</loc>
-    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fisher046.github.io/tags/persistent-volume/</loc>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/post/</loc>
-    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/tags/</loc>
+    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>

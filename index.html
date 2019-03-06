@@ -121,18 +121,15 @@
       <div class="post-category">
           <a href="/categories/kubernetes/"> Kubernetes </a>
           </div>
-        <span class="more-meta"> 311 words </span>
+        <span class="more-meta"> 424 words </span>
         <span class="more-meta"> 2 mins read </span>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      Prerequisites  Create EFS on AWS  Selected Subnets should contain the k8s cluster subnets.
-Selected Security Groups should ensure the EFS can be accessible.
- Create one EC2 instance in the same VPC as EFS.
- SSH to the instance, mount the EFS and create folder.
-  1 2 3 4  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs   file_sys_id can be found from AWS EFS console.
+      Preface When I was using AWS as Kubernetes cloud provider, I have two choices for persistent volume, EBS and EFS. However, EBS can only mount to one EC2 instance, which is not appropriate to my scenario, so I can only choose EFS.
+My requirement is that when I need a persistent volume, I only create PVC and the related PV should be created automatically. So I summary the steps to reach my purpose in below words.
     </div>
     <div class="read-more">
       <a href="/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/" class="read-more-link">Read more..</a>
@@ -174,14 +171,14 @@ Init container is responsible for initializing the service. For example, the con
       <div class="post-category">
           <a href="/categories/golang/"> Golang </a>
           </div>
-        <span class="more-meta"> 1214 words </span>
+        <span class="more-meta"> 1231 words </span>
         <span class="more-meta"> 3 mins read </span>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &#34;fmt&#34; ) type doError struct{} func (e *doError) Error() string { return &#34;&#34; } func do() error {
+      title: &ldquo;Understanding the nil in Golang&rdquo; date: 2018-08-10T17:00:00+08:00 lastmod: 2018-08-10T17:00:00+08:00 draft: false tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;] categories: [&ldquo;Golang&rdquo;] Understanding the nil in Golang Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &#34;fmt&#34;
     </div>
     <div class="read-more">
       <a href="/post/understanding-the-nil-in-golang/" class="read-more-link">Read more..</a>
