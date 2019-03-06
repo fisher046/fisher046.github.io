@@ -10,5 +10,23 @@
 	<atom:link href="https://fisher046.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>Golang</title>
+      <link>https://fisher046.github.io/categories/golang/</link>
+      <pubDate>Fri, 10 Aug 2018 17:00:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/categories/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://fisher046.github.io/categories/kubernetes/</link>
+      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/categories/kubernetes/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

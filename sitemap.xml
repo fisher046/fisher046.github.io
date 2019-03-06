@@ -30,7 +30,21 @@
   </url>
   
   <url>
+    <loc>https://fisher046.github.io/categories/golang/</loc>
+    <lastmod>2018-08-10T17:00:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://fisher046.github.io/</loc>
+    <lastmod>2019-03-05T09:36:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fisher046.github.io/categories/kubernetes/</loc>
     <lastmod>2019-03-05T09:36:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
@@ -44,15 +58,7 @@
   </url>
   
   <url>
-    <loc>https://fisher046.github.io/tags/programming/</loc>
-    <lastmod>2018-08-10T17:00:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://fisher046.github.io/tags/</loc>
-    <lastmod>2018-08-10T17:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>

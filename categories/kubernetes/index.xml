@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Huan Zhang&#39;s blog</title>
+    <link>https://fisher046.github.io/categories/kubernetes/</link>
+    <description>Recent content in Kubernetes on Huan Zhang&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 05 Mar 2019 09:36:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://fisher046.github.io/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to create PV dynamically on k8s with AWS EFS</title>
+      <link>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</link>
+      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</guid>
+      <description>Prerequisites  Create EFS on AWS  Selected Subnets should contain the k8s cluster subnets.
+Selected Security Groups should ensure the EFS can be accessible.
+ Create one EC2 instance in the same VPC as EFS.
+ SSH to the instance, mount the EFS and create folder.
+  1 2 3 4  sudo yum install -y nfs-utils sudo mkdir efs sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${file_sys_id}.efs.us-east-1.amazonaws.com:/ efs sudo mkdir efs/pvs   file_sys_id can be found from AWS EFS console.</description>
+    </item>
+    
+    <item>
+      <title>Tips of deploying service on Kubernetes</title>
+      <link>https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/</link>
+      <pubDate>Sun, 21 Oct 2018 13:35:00 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/post/tips-of-deploying-service-on-k8s/</guid>
+      <description>Preface These are some tips or something should be considered when you want to deploy your service on Kubernetes.
+About Pod How to decide what things should be put in one Pod? When designing a Pod, you should consider below 4 types container.
+ Function container Init container Monitor container Operator container     Function container is the service.
+Init container is responsible for initializing the service. For example, the configuration.</description>
+    </item>
+    
+  </channel>
+</rss>
