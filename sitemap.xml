@@ -3,6 +3,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://fisher046.github.io/post/how-to-generate-kube-config-with-limited-access/</loc>
+    <lastmod>2019-03-08T09:05:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://fisher046.github.io/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/</loc>
     <lastmod>2019-03-06T09:31:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -45,21 +52,21 @@
   
   <url>
     <loc>https://fisher046.github.io/</loc>
-    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <lastmod>2019-03-08T09:05:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/tags/kubernetes/</loc>
-    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <lastmod>2019-03-08T09:05:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fisher046.github.io/categories/kubernetes/</loc>
-    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <lastmod>2019-03-08T09:05:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -73,7 +80,14 @@
   
   <url>
     <loc>https://fisher046.github.io/post/</loc>
-    <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <lastmod>2019-03-08T09:05:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fisher046.github.io/tags/rbac/</loc>
+    <lastmod>2019-03-08T09:05:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>

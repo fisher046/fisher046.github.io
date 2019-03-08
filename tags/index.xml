@@ -23,7 +23,7 @@
     <item>
       <title>Kubernetes</title>
       <link>https://fisher046.github.io/tags/kubernetes/</link>
-      <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
+      <pubDate>Fri, 08 Mar 2019 09:05:12 +0800</pubDate>
       
       <guid>https://fisher046.github.io/tags/kubernetes/</guid>
       <description></description>
@@ -35,6 +35,15 @@
       <pubDate>Tue, 05 Mar 2019 09:36:00 +0800</pubDate>
       
       <guid>https://fisher046.github.io/tags/persistent-volume/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RBAC</title>
+      <link>https://fisher046.github.io/tags/rbac/</link>
+      <pubDate>Fri, 08 Mar 2019 09:05:12 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/tags/rbac/</guid>
       <description></description>
     </item>
     

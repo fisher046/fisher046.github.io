@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RBAC on Huan Zhang&#39;s blog</title>
+    <link>https://fisher046.github.io/tags/rbac/</link>
+    <description>Recent content in RBAC on Huan Zhang&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 08 Mar 2019 09:05:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://fisher046.github.io/tags/rbac/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to generate kubeconfig with limited access</title>
+      <link>https://fisher046.github.io/post/how-to-generate-kube-config-with-limited-access/</link>
+      <pubDate>Fri, 08 Mar 2019 09:05:12 +0800</pubDate>
+      
+      <guid>https://fisher046.github.io/post/how-to-generate-kube-config-with-limited-access/</guid>
+      <description>Requirement I have full access kubeconfig and I want to provide a limited kubeconfig to another user, which only has access to resources in one specific namespace.
+Steps Create the namespace.
+1  kubectl create namespace example   Create a ServiceAccount in previous namespace.
+1 2 3 4 5  apiVersion:v1kind:ServiceAccountmetadata:name:example-usernamespace:example  1  kubectl create -f service_account.yaml   Create Role and RoleBinding for the ServiceAccount in previous namespace.</description>
+    </item>
+    
+  </channel>
+</rss>

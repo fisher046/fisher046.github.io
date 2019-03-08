@@ -45,7 +45,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://fisher046.github.io/" />
 
-<meta property="og:updated_time" content="2019-03-05T09:36:00&#43;08:00"/>
+<meta property="og:updated_time" content="2019-03-08T09:05:12&#43;08:00"/>
 
 <meta itemprop="name" content="Huan Zhang&#39;s blog">
 <meta itemprop="description" content="Huan Zhang&#39;s blog.">
@@ -113,6 +113,32 @@
       <div class="content-wrapper">
         <div id="content" class="content">
           <section id="posts" class="posts">
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/how-to-generate-kube-config-with-limited-access/">How to generate kubeconfig with limited access</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2019-03-08 </span>
+      <div class="post-category">
+          <a href="/categories/kubernetes/"> Kubernetes </a>
+          </div>
+        <span class="more-meta"> 255 words </span>
+        <span class="more-meta"> 2 mins read </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      Requirement I have full access kubeconfig and I want to provide a limited kubeconfig to another user, which only has access to resources in one specific namespace.
+Steps Create the namespace.
+1  kubectl create namespace example   Create a ServiceAccount in previous namespace.
+1 2 3 4 5  apiVersion:v1kind:ServiceAccountmetadata:name:example-usernamespace:example  1  kubectl create -f service_account.yaml   Create Role and RoleBinding for the ServiceAccount in previous namespace.
+    </div>
+    <div class="read-more">
+      <a href="/post/how-to-generate-kube-config-with-limited-access/" class="read-more-link">Read more..</a>
+    </div>
+  </div>
+</article>
+
     <article class="post">
   <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/how-to-create-pv-dynamically-on-k8s-with-aws-efs/">How to create PV dynamically on k8s with AWS EFS</a></h1>
