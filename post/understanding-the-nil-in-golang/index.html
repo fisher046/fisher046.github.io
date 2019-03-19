@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Huan Zhang" /><meta name="description" content="A summary of the nil in Golang based on some articles." /><meta name="keywords" content="Kubernetes, k8s, Golang" />
+<meta name="author" content="Huan Zhang" /><meta name="description" content="Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &amp;#34;fmt&amp;#34; ) type doError struct{} func (e *doError) Error() string { return &amp;#34;&amp;#34; } func do() error { var err *doError return err" /><meta name="keywords" content="Kubernetes, k8s, Golang" />
 
 
 
@@ -39,26 +39,26 @@
 
 
 <meta property="og:title" content="Understanding the nil in Golang" />
-<meta property="og:description" content="A summary of the nil in Golang based on some articles." />
+<meta property="og:description" content="Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &#34;fmt&#34; ) type doError struct{} func (e *doError) Error() string { return &#34;&#34; } func do() error { var err *doError return err" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://fisher046.github.io/post/understanding-the-nil-in-golang/" />
 <meta property="article:published_time" content="2018-08-10T17:00:00&#43;08:00"/>
-<meta property="article:modified_time" content="2018-08-10T17:00:00&#43;08:00"/>
+<meta property="article:modified_time" content="2019-03-19T14:41:00&#43;08:00"/>
 
 <meta itemprop="name" content="Understanding the nil in Golang">
-<meta itemprop="description" content="A summary of the nil in Golang based on some articles.">
+<meta itemprop="description" content="Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &#34;fmt&#34; ) type doError struct{} func (e *doError) Error() string { return &#34;&#34; } func do() error { var err *doError return err">
 
 
 <meta itemprop="datePublished" content="2018-08-10T17:00:00&#43;08:00" />
-<meta itemprop="dateModified" content="2018-08-10T17:00:00&#43;08:00" />
-<meta itemprop="wordCount" content="1231">
+<meta itemprop="dateModified" content="2019-03-19T14:41:00&#43;08:00" />
+<meta itemprop="wordCount" content="1209">
 
 
 
-<meta itemprop="keywords" content="" />
+<meta itemprop="keywords" content="Golang,nil," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Understanding the nil in Golang"/>
-<meta name="twitter:description" content="A summary of the nil in Golang based on some articles."/>
+<meta name="twitter:description" content="Reference GopherCon 2016: Francesc Campoy - Understanding nil 理解Go语言的nil Is it a bug? 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 package main import ( &#34;fmt&#34; ) type doError struct{} func (e *doError) Error() string { return &#34;&#34; } func do() error { var err *doError return err"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -128,7 +128,7 @@
         <div class="post-category">
             <a href="/categories/golang/"> Golang </a>
             </div>
-          <span class="more-meta"> 1231 words </span>
+          <span class="more-meta"> 1209 words </span>
           <span class="more-meta"> 3 mins read </span>
         
       </div>
@@ -139,19 +139,12 @@
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
 <ul>
-<li>
-<ul>
-<li><a href="#categories-golang">categories: [&ldquo;Golang&rdquo;]</a></li>
-</ul></li>
-<li><a href="#understanding-the-nil-in-golang">Understanding the nil in Golang</a>
-<ul>
 <li><a href="#reference">Reference</a></li>
 <li><a href="#is-it-a-bug">Is it a bug?</a></li>
 <li><a href="#what-s-the-nil">What&rsquo;s the nil?</a></li>
 <li><a href="#what-s-the-usage-of-nil">What&rsquo;s the usage of nil?</a>
 <ul>
 <li><a href="#for-pointers">For Pointers</a></li>
-</ul></li>
 <li><a href="#for-slices">For Slices</a></li>
 <li><a href="#for-maps">For Maps</a></li>
 <li><a href="#for-channels">For Channels</a></li>
@@ -164,26 +157,13 @@
     <div class="post-content">
       
 
-<hr />
-
-<p>title: &ldquo;Understanding the nil in Golang&rdquo;
-date: 2018-08-10T17:00:00+08:00
-lastmod: 2018-08-10T17:00:00+08:00
-draft: false
-tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
-
-<h2 id="categories-golang">categories: [&ldquo;Golang&rdquo;]</h2>
-
-<h1 id="understanding-the-nil-in-golang">Understanding the nil in Golang</h1>
-
-<h2 id="reference">Reference</h2>
+<h1 id="reference">Reference</h1>
 
 <p><a href="https://www.youtube.com/watch?v=ynoY2xz-F8s">GopherCon 2016: Francesc Campoy - Understanding nil</a></p>
 
 <p><a href="https://www.jianshu.com/p/dd80f6be7969">理解Go语言的nil</a></p>
 
-<h2 id="is-it-a-bug">Is it a bug?</h2>
-
+<h1 id="is-it-a-bug">Is it a bug?</h1>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -232,11 +212,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
-<h2 id="what-s-the-nil">What&rsquo;s the nil?</h2>
+<h1 id="what-s-the-nil">What&rsquo;s the nil?</h1>
 
 <p>See a very, very, very familiar code.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -249,9 +227,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Here is a summary about zero value of all types.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -278,9 +254,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="nx">interfaces</span> <span class="o">-</span><span class="p">&gt;</span> <span class="kc">nil</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>See an example.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -301,11 +275,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="kd">var</span> <span class="nx">p</span> <span class="nx">Person</span> <span class="o">//</span> <span class="nx">Person</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If a variable is only declared and has no assignment, it is zero value.</p>
 
 <p><code>nil</code> is a pre-defined variable, not a keyword.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -316,9 +288,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="kd">var</span> <span class="kc">nil</span> <span class="nx">Type</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>You can even change its value.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -327,13 +297,11 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="kc">nil</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;hi&#34;</span><span class="p">)</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>But you should not do it.</p>
 
-<h2 id="what-s-the-usage-of-nil">What&rsquo;s the usage of nil?</h2>
+<h1 id="what-s-the-usage-of-nil">What&rsquo;s the usage of nil?</h1>
 
-<h3 id="for-pointers">For Pointers</h3>
-
+<h2 id="for-pointers">For Pointers</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -346,11 +314,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="o">*</span><span class="nx">p</span>          <span class="o">//</span> <span class="nx">panic</span><span class="p">:</span> <span class="nx">invalid</span> <span class="nx">memory</span> <span class="nx">address</span> <span class="nx">or</span> <span class="kc">nil</span> <span class="nx">pointer</span> <span class="nx">dereference</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Dereference to <code>nil</code> pointer will cause panic.</p>
 
 <p>What&rsquo;s the usage of <code>nil</code>? Firstly see a code.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -391,9 +357,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Two problems exist in this code. First is redundant code like:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -406,9 +370,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Second is it will cause panic when <code>t</code> is <code>nil</code>.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -419,9 +381,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="nx">sum</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nf">Sum</span><span class="p">()</span>   <span class="o">//</span> <span class="nx">panic</span><span class="p">:</span> <span class="nx">invalid</span> <span class="nx">memory</span> <span class="nx">address</span> <span class="nx">or</span> <span class="kc">nil</span> <span class="nx">pointer</span> <span class="nx">dereference</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>How to solve? Let&rsquo;s see an example of receiver.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -438,11 +398,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="nx">p</span><span class="p">.</span><span class="nf">sayHi</span><span class="p">()</span> <span class="o">//</span> <span class="nx">hi</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p><strong>For pointer, even it is <code>nil</code>, the method of its object can be invoked.</strong></p>
 
 <p>So we can optimize the code like:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -461,9 +419,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>See more examples:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -498,11 +454,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>So if no special reason, avoid to use initialize function like <code>NewX()</code>. Just use the default value.</p>
 
 <h2 id="for-slices">For Slices</h2>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -521,59 +475,19 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>  <span class="o">//</span> <span class="nx">panic</span><span class="p">:</span> <span class="nx">index</span> <span class="nx">out</span> <span class="nx">of</span> <span class="k">range</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>A <code>nil</code> slice can only not be indexed and all other operations can be done. Use <code>append</code> and it will be extended automatically. See slice data structure:</p>
 
-
-
-<div class="pure-g">
-
-  
-  
-  
-  
-  <div class="slice-structure">
-    <div style="padding: 0 .2em">
-      <img
-        class="pure-img-responsive"
-        src="/img/post/slice_structure.png"
-        alt="">
-    </div>
-  </div>
-  
-
-</div>
-
+<p><img src="/img/post/slice_structure.png" alt="slice-structure" /></p>
 
 <p>When there is an element in it, it will be like:</p>
 
-
-
-<div class="pure-g">
-
-  
-  
-  
-  
-  <div class="slice-with-element">
-    <div style="padding: 0 .2em">
-      <img
-        class="pure-img-responsive"
-        src="/img/post/slice_with_element.png"
-        alt="">
-    </div>
-  </div>
-  
-
-</div>
-
+<p><img src="/img/post/slice_with_element.png" alt="slice-with-element" /></p>
 
 <p>So no need to care about size of slice.</p>
 
 <h2 id="for-maps">For Maps</h2>
 
 <p>Map, function and channel are special pointers in Golang and have their own implementation.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -592,11 +506,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="nx">m</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">x</span> <span class="o">//</span> <span class="nx">panic</span><span class="p">:</span> <span class="nx">assignment</span> <span class="nx">to</span> <span class="nx">entry</span> <span class="nx">in</span> <span class="kc">nil</span> <span class="kd">map</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p><code>nil</code> map can be a readonly map.</p>
 
 <p>What&rsquo;s the usage of nil? See an example:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -625,9 +537,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>When need to set header, we can:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -640,9 +550,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">},)</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>When no need to set header, we can:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -651,9 +559,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="nf">NewGet</span><span class="p">(</span><span class="s">&#34;http://google.com&#34;</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{})</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Or we use <code>nil</code>.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -662,9 +568,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="nf">NewGet</span><span class="p">(</span><span class="s">&#34;http://google.com&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <h2 id="for-channels">For Channels</h2>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -681,11 +585,9 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="nb">close</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>  <span class="o">//</span> <span class="nx">panic</span><span class="p">:</span> <span class="nx">close</span> <span class="nx">of</span> <span class="kc">nil</span> <span class="nx">channel</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Close a <code>nil</code> channel will cause panic.</p>
 
 <p>What&rsquo;s the usage of <code>nil</code> channel? See an example.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -712,9 +614,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If <code>a</code> or <code>b</code> is closed, <code>&lt;-a</code> or <code>&lt;-b</code> will return zero value without a stop. This is not expected. We want to stop merge value from <code>a</code> if it is closed. Change the code:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -765,13 +665,11 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>When <code>a</code> or <code>b</code> is closed, set it as <code>nil</code>, it means the <code>case</code> will not be used because <code>nil</code> channel will be blocked forever.</p>
 
 <h2 id="for-interfaces">For Interfaces</h2>
 
 <p>Interface is not a pointer, it contains two parts, type and value. Only when both of them are <code>nil</code>, it is <code>nil</code>. See:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -796,9 +694,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>The output is <code>false</code>. Because the type of error is <code>*doError</code> and the value is <code>nil</code>, the error is not <code>nil</code>. So do not declare an error, just return <code>nil</code>.</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
@@ -811,9 +707,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>See another code:</p>
-
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
@@ -844,7 +738,6 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
 </span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>The output is still <code>false</code> because although <code>wrapDo</code> returns error type, <code>do</code> returns <code>*doError</code>. So do not return typed error. Follow these 2 principles, then we can carefully use <code>if x != nil</code>.</p>
 
     </div>
@@ -857,7 +750,7 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-        2018-08-10
+        2019-03-19
         
     </span>
   </p>
@@ -865,7 +758,10 @@ tags: [&ldquo;Golang&rdquo;, &ldquo;nil&rdquo;]</p>
   
 </div>
 <footer class="post-footer">
-      
+      <div class="post-tags">
+          <a href="/tags/golang/">Golang</a>
+          <a href="/tags/nil/">nil</a>
+          </div>
       <nav class="post-nav">
         <a class="prev" href="/post/tips-of-deploying-service-on-k8s/">
             <i class="iconfont icon-left"></i>

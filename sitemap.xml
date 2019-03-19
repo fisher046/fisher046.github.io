@@ -25,7 +25,7 @@
   
   <url>
     <loc>https://fisher046.github.io/post/understanding-the-nil-in-golang/</loc>
-    <lastmod>2018-08-10T17:00:00+08:00</lastmod>
+    <lastmod>2019-03-19T14:41:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -44,8 +44,15 @@
   </url>
   
   <url>
+    <loc>https://fisher046.github.io/tags/golang/</loc>
+    <lastmod>2019-03-19T14:41:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://fisher046.github.io/categories/golang/</loc>
-    <lastmod>2018-08-10T17:00:00+08:00</lastmod>
+    <lastmod>2019-03-19T14:41:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -95,6 +102,13 @@
   <url>
     <loc>https://fisher046.github.io/tags/</loc>
     <lastmod>2019-03-06T09:31:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fisher046.github.io/tags/nil/</loc>
+    <lastmod>2019-03-19T14:41:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
